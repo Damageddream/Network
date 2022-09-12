@@ -1,0 +1,9 @@
+.line {
+    border-bottom: 3px solid black;
+    height: 5px;
+    margin: 5px;
+}
+
+.grey {
+    background-color: rgba(210, 218, 218, 0.733);
+}

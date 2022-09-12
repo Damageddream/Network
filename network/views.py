@@ -4,11 +4,14 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, New_post
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = reversed(New_post.objects.all())
+    return render(request, "network/index.html", {
+        "posts": posts
+    })
 
 
 def login_view(request):
@@ -61,3 +64,58 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+    
+def new_post(request):
+    if request.method == "POST":
+        post_text = request.POST["post_text"]
+        author = request.user
+        post = New_post(poster=request.user, post=post_text)
+        post.save()
+        return render(request, "network/new_post.html", {
+            "post_text": post_text,
+            "author": author
+        })
+    else:
+        return render(request, "network/new_post.html")
+
+def profile(request, user_id):
+    profile = User.objects.get(id=user_id)
+    posts = reversed(New_post.objects.all().filter(poster=profile.id))
+    user = User.objects.get(id=request.user.id)
+
+
+    if request.method == "POST":
+        if "follow" in request.POST:
+            profile.followers.add(user.id)
+            profile.followers_number = len(profile.followers.all())
+            profile.save()
+            user.following.add(profile.id)
+            user.following_number = len(user.following.all())
+            user.save()
+        elif "unfollow" in request.POST:
+            profile.followers.remove(user.id)
+            profile.followers_number = len(profile.followers.all())
+            profile.save()
+            user.following.remove(profile.id)
+            user.following_number = len(user.following.all())
+            user.save()
+
+
+    return render(request, "network/profile.html", {
+        "profile": profile,
+        "posts": posts
+    })
+
+def following(request):
+    user = request.user
+    posts_id = []
+    for id in user.following.all():
+        posts_id.append(id.id)
+    posts = reversed(New_post.objects.all().filter(poster__in=posts_id))
+    for post in posts:
+        print(post)
+
+    return render(request, "network/following.html", {
+        "posts": posts
+    })
+

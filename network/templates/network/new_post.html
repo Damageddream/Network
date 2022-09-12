@@ -1,0 +1,16 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<form action="{% url 'new_post' %}" method="post">
+
+    {% csrf_token %}
+
+    <div class="form-group">
+        <input autofocus class="form-control" type="text" name="post_text" placeholder="What you want to share...">
+    </div>
+    <input clas="btn btn-primary" type="submit" value="Add post">
+
+</form> 
+
+{% endblock %}

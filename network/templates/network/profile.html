@@ -1,0 +1,41 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h3>{{ profile.username }}</h3>
+    
+    {% if profile.username != user.username %}
+        {% if profile in user.following.all %}
+        <form action="{% url 'profile' profile.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-primary" type="submit" value="Unfollow" name="unfollow"> 
+        </form>
+        {% else %}
+        <form action="{% url 'profile' profile.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-primary" type="submit" value="Follow" name="follow"> 
+        </form>
+        {% endif %}
+    {% endif %}
+
+    <ul>
+        <li><div class="grey">Following:</div>{{ profile.following_number }}</li>
+        <li><div class="grey">Followers:</div>{{ profile.followers_number }}</li>
+    </ul>
+
+    <h3>Posts:</h3>
+
+    <ul>
+        {% for post in posts %}
+            <div class="line"></div>
+            <div>
+                <li><div class="grey">Author:</div>{{ post.poster }}</li>
+                <li><div class="grey">Post:</div>{{ post.post }}</li>
+                <li><div class="grey">Added:</div>{{ post.date }}</li>
+                <li><div class="grey">Likes:</div>{{ post.likes }}</li>
+                {% empty %}
+                <li>No current posts</li>
+            </div>
+            {% endfor %}  
+    </ul>
+
+{% endblock %}
