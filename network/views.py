@@ -3,14 +3,20 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User, New_post
 
 
+
 def index(request):
-    posts = reversed(New_post.objects.all())
+    posts = list(reversed(New_post.objects.all()))
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html", {
-        "posts": posts
+        "page_obj": page_obj
     })
 
 
@@ -111,11 +117,11 @@ def following(request):
     posts_id = []
     for id in user.following.all():
         posts_id.append(id.id)
-    posts = reversed(New_post.objects.all().filter(poster__in=posts_id))
-    for post in posts:
-        print(post)
-
+    posts = list(reversed(New_post.objects.all().filter(poster__in=posts_id)))
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     return render(request, "network/following.html", {
-        "posts": posts
+        "page_obj": page_obj
     })
 
