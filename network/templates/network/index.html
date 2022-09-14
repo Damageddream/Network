@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <ul>
@@ -9,7 +10,24 @@
                     <div class="grey">Author:</div>
                     <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
                 </li>
-                <li><div class="grey">Post:</div>{{ post.post }}</li>
+                <div class="post">
+                    <li>
+                        <div class="grey">Post:</div>{{ post.post }}
+                        {% if post.poster == user %}
+                            <button class="btn btn-primary" class="edit-b" data-box="edit-button" name="ed" value="esd">Edit</button>
+                        {% endif %}
+                    </li>
+        
+                </div>
+                <div class="edit">
+                    <li>
+                        <div class="grey">Edit Post:</div>
+                        <form id="edit-post">
+                            <textarea class="form-control">{{ post.post }}</textarea>
+                            <input class="form-control" type="submit" value="Save" class="btn btn-primary"/>
+                        </form>      
+                    </li>
+                </div>
                 <li><div class="grey">Added:</div>{{ post.date }}</li>
                 <li><div class="grey">Likes:</div>{{ post.likes }}</li>
                 {% empty %}
