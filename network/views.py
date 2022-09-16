@@ -1,9 +1,11 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+
 
 from .models import User, New_post
 
@@ -125,3 +127,6 @@ def following(request):
         "page_obj": page_obj
     })
 
+def edit(request):
+    posts = New_post.objects.all()
+    return JsonResponse([post.serialize() for post in posts], safe=False)

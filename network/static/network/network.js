@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    document.querySelector('.edit-b').addEventListener('click', () => {
-        edit()
-    })
+    
+    edit()
 
 
     document.querySelector('.edit').style.display='none';
@@ -10,7 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 function edit() {
-    document.querySelector('.edit').style.display='block';
-    document.querySelector('.post').style.display='none';
+    fetch('/edit')
+    .then(response => response.json())
+    .then(posts =>{
+        console.log(posts);
+    })
 
 }

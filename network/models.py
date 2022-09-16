@@ -18,4 +18,13 @@ class New_post(models.Model):
     likes = models.IntegerField(default=0)
     def __str__(self):
         return f"{self.post}"
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "poster": self.poster.id,
+            "post": self.post,
+            "date": self.date.strftime("%b %d %Y, %I:%M %p"),
+            "likes": self.likes
+        }
 
