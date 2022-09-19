@@ -12,15 +12,29 @@ function edit() {
     .then(response => response.json())
     .then((posts) =>{
         console.log(posts);
-        posts.forEach((post) => {
-            console.log(post);
-            document.getElementById(`button_${post.id}`).onclick = () =>
-            fetch(`edit/${post.id}`)
-            .then(response => response.json())
-            .then(t_post => {
+        posts.forEach((post) => {            
+            document.getElementById(`button_${post.id}`).onclick = () => {
+                document.querySelector(`#post_${post.id}`).style.display='none';
+                document.querySelector(`#edit_${post.id}`).style.display='block';
+                console.log(`#edit-post-${post.id}`)         
+            }
+            document.querySelector(`#edit-post-${post.id}`).onsubmit = () => {
+                console.log("submit")
+                fetch(`editp/${post.id}`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        text: document.querySelector(`#text_${post.id}`).value
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(result);
+                })
                 
-            })
+            }
+
             
+
         })
     })
 

@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.views.decorators.csrf import csrf_exempt
 
 
 from .models import User, New_post
@@ -127,18 +128,26 @@ def following(request):
         "page_obj": page_obj
     })
 
+@csrf_exempt
 def edit(request,page):
     posts = list(reversed(New_post.objects.all()))
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page)
-    print(page_number)
     return JsonResponse([post.serialize() for post in page_obj], safe=False)
-    
+
+@csrf_exempt
 def edit_post(request, post_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
     try:
         post = New_post.objects.get(pk=post_id)
     except New_post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
-    if request.method == "GET":
-        return JsonResponse(post.serialize())
+    if request.method == "POST" and post.poster == request.user:
+        print("posting")
+        data = json.loads(request.body)
+        text = data.get("text", "")
+        post.post = text
+        post.save()
+        return JsonResponse({"message": "Post updated successfully."}, status=201)

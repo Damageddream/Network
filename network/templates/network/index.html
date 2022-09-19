@@ -25,8 +25,8 @@
                 <div class="edit" id="edit_{{ post.id }}" style="display: none;">
                     <li>
                         <div class="grey">Edit Post:</div>
-                        <form id="edit-post">
-                            <textarea class="form-control">{{ post.post }}</textarea>
+                        <form id="edit-post-{{ post.id }}">
+                            <textarea id="text_{{ post.id }}" class="form-control">{{ post.post }}</textarea>
                             <input type="submit" value="Save" class="btn btn-primary"/>
                         </form>      
                     </li>
