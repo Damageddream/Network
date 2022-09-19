@@ -1,0 +1,3 @@
+            document.getElementById(`button_${post.id}`).addEventListener('click', () => {
+                document.querySelector(`#post_${post.id}`).style.display='none';
+                document.querySelector(`#edit_${post.id}`).style.display='block';

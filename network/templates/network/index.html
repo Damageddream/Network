@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <ul>
+    <ul id="page{{ page_obj.number }}">
         {% for post in page_obj %}
             <div class="line"></div>
             <div>
@@ -14,7 +14,9 @@
                     <li>
                         <div class="grey">Post:</div>{{ post.post }}
                         {% if post.poster == user %}
-                            <button class="btn btn-primary edit-b" data-box="edit-button" name="ed" value="esd">Edit</button>
+                            <button class="btn btn-primary edit-b" id="button_{{ post.id }}" data-box="edit-button" name="ed" value="esd" style="display: block;">Edit</button>
+                        {% else %}
+                            <button class="btn btn-primary edit-b" id="button_{{ post.id }}" data-box="edit-button" name="ed" value="esd" style="display: none;">Edit</button>
                         {% endif %}
                     </li>
         

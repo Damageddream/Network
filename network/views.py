@@ -128,5 +128,16 @@ def following(request):
     })
 
 def edit(request):
-    posts = New_post.objects.all()
-    return JsonResponse([post.serialize() for post in posts], safe=False)
+    posts = list(reversed(New_post.objects.all()))
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return JsonResponse([post.serialize() for post in page_obj], safe=False)
+    
+def edit_post(request, post_id):
+    try:
+        post = New_post.objects.get(pk=post_id)
+    except New_post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
