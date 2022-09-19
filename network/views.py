@@ -16,9 +16,9 @@ def index(request):
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     return render(request, "network/index.html", {
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        "page_number": page_number
     })
 
 
@@ -127,11 +127,12 @@ def following(request):
         "page_obj": page_obj
     })
 
-def edit(request):
+def edit(request,page):
     posts = list(reversed(New_post.objects.all()))
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page)
+    print(page_number)
     return JsonResponse([post.serialize() for post in page_obj], safe=False)
     
 def edit_post(request, post_id):

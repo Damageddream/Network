@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 function edit() {
-    
-    fetch('/edit')
+    const h3 = document.querySelector("h3")
+    const page = h3.id
+    fetch(`/edit/${page}`)
     .then(response => response.json())
-    .then(posts =>{
+    .then((posts) =>{
         console.log(posts);
         posts.forEach((post) => {
             console.log(post);
@@ -17,7 +18,7 @@ function edit() {
             fetch(`edit/${post.id}`)
             .then(response => response.json())
             .then(t_post => {
-                console.log(t_post)
+                
             })
             
         })
