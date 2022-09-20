@@ -138,16 +138,35 @@ def edit(request,page):
 
 @csrf_exempt
 def edit_post(request, post_id):
-    if request.method != "POST":
+    if request.method != "PUT":
         return JsonResponse({"error": "POST request required."}, status=400)
     try:
         post = New_post.objects.get(pk=post_id)
     except New_post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
-    if request.method == "POST" and post.poster == request.user:
+    if request.method == "PUT" and post.poster == request.user:
         print("posting")
         data = json.loads(request.body)
         text = data.get("text", "")
         post.post = text
         post.save()
-        return JsonResponse({"message": "Post updated successfully."}, status=201)
+        return HttpResponse(status=204)
+
+@csrf_exempt
+def like(request, post_id):
+    try:
+        post = New_post.objects.get(pk=post_id)
+    except New_post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+        
+    print(request.user.id, post.u_likes, post.post)
+    if request.method == "PUT":
+        if request.user in post.u_likes.all():
+            post.u_likes.remove(request.user)
+            post.likes = len(post.u_likes.all())
+            post.save()
+        else:
+            post.u_likes.add(request.user)
+            post.likes = len(post.u_likes.all())
+            post.save()
+        return JsonResponse(post.serialize(), safe=False)

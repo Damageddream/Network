@@ -16,6 +16,7 @@ class New_post(models.Model):
     post = models.TextField(max_length=500)
     date = models.DateTimeField(auto_now=True)
     likes = models.IntegerField(default=0)
+    u_likes = models.ManyToManyField(User, blank=True, related_name="u_likes")
     def __str__(self):
         return f"{self.post}"
     
@@ -25,6 +26,6 @@ class New_post(models.Model):
             "poster": self.poster.id,
             "post": self.post,
             "date": self.date.strftime("%b %d %Y, %I:%M %p"),
-            "likes": self.likes
+            "likes": self.likes,
         }
 

@@ -1,3 +1,10 @@
             document.getElementById(`button_${post.id}`).addEventListener('click', () => {
                 document.querySelector(`#post_${post.id}`).style.display='none';
                 document.querySelector(`#edit_${post.id}`).style.display='block';
+
+                
+        if request.user.id in post.u_likes or post.u_likes == None:
+            post.u_likes.remove(request.user)
+            post.likes = len(post.u_likes)
+            post.save()
+        else:

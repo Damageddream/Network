@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
- 
-    edit()
 
-;
+        edit()
   });
 
 function edit() {
@@ -18,18 +16,36 @@ function edit() {
                 document.querySelector(`#edit_${post.id}`).style.display='block';
                 console.log(`#edit-post-${post.id}`)         
             }
+            document.getElementById(`like_${post.id}`).onclick = () => {
+                fetch(`like/${post.id}`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                    })
+                })
+                .then(response => response.json())
+                .then(post => {
+                    console.log(post.likes)
+                    document.querySelector(`#likes_${post.id}`).innerHTML= post.likes;
+                })
+
+                return false;
+
+            }
             document.querySelector(`#edit-post-${post.id}`).onsubmit = () => {
                 console.log("submit")
                 fetch(`editp/${post.id}`, {
-                    method: "POST",
+                    method: "PUT",
                     body: JSON.stringify({
                         text: document.querySelector(`#text_${post.id}`).value
                     })
                 })
-                .then(response => response.json())
-                .then(result => {
-                    console.log(result);
+                .then(() => {
+                    document.querySelector(`#post_${post.id}`).style.display='block';
+                    document.querySelector(`#hid_${post.id}`).innerHTML= document.querySelector(`#text_${post.id}`).value;
+                    document.querySelector(`#edit_${post.id}`).style.display='none';
                 })
+
+                return false;
                 
             }
 
