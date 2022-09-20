@@ -1,24 +1,55 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    <ul>
-
-        {% for post in page_obj %}
-            <div class="line"></div>
+<h3 id="{{ page_number }}" style="display: none;">{{ page_number }}</h3>
+<h4 id="following" style="display: none;">{{ page_number }}</h4>
+<ul id="page{{ page_obj.number }}">
+    {% for post in page_obj %}
+        <div class="line"></div>
+        <div>
+            <li>
+                <div class="grey">Author:</div>
+                <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+            </li>
+            <div class="post" id="post_{{ post.id }}">
+                <li>
+                    <div class="grey">Post:</div><div id="hid_{{ post.id }}">{{ post.post }}</div>
+                    {% if post.poster == user %}
+                        <button class="btn btn-primary edit-b" id="button_{{ post.id }}" data-box="edit-button" name="ed" value="esd" style="display: block;">Edit</button>
+                    {% else %}
+                        <button class="btn btn-primary edit-b" id="button_{{ post.id }}" data-box="edit-button" name="ed" value="esd" style="display: none;">Edit</button>
+                    {% endif %}
+                </li>
+    
+            </div>
+            <div class="edit" id="edit_{{ post.id }}" style="display: none;">
+                <li>
+                    <div class="grey">Edit Post:</div>
+                    <form id="edit-post-{{ post.id }}">
+                        <textarea id="text_{{ post.id }}" class="form-control">{{ post.post }}</textarea>
+                        <input type="submit" value="Save" class="btn btn-primary"/>
+                    </form>      
+                </li>
+            </div>
+            <li><div class="grey">Added:</div>{{ post.date }}</li>
+            <li><div class="grey">Likes:</div><div id="likes_{{ post.id }}">{{ post.likes }}</li></div>
+            {% if user.is_authenticated %}
             <div>
                 <li>
-                    <div class="grey">Author:</div>
-                    <a href="{% url 'profile' post.poster.id %}">{{ post.poster }}</a>
+                    {% if user in post.u_likes.all %}
+                    <button class="btn btn-primary" id="like_{{ post.id }}">Unlike</button>
+                    {% else %}
+                    <button class="btn btn-primary" id="like_{{ post.id }}">Like</button>
+                    {% endif %}
                 </li>
-                <li><div class="grey">Post:</div>{{ post.post }}</li>
-                <li><div class="grey">Added:</div>{{ post.date }}</li>
-                <li><div class="grey">Likes:</div>{{ post.likes }}</li>
-                {% empty %}
-                <li>No current posts</li>
             </div>
-            {% endfor %}
-            
-    </ul>
+            {% endif %}
+            {% empty %}
+            <li>No current posts</li>
+        </div>
+        {% endfor %}
+        
+</ul>
 
     <div class="pagination">
         <span class="step-links">

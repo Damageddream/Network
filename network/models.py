@@ -14,7 +14,7 @@ class User(AbstractUser):
 class New_post(models.Model):
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="poster")
     post = models.TextField(max_length=500)
-    date = models.DateTimeField(auto_now=True)
+    date = models.DateTimeField(auto_now_add=True)
     likes = models.IntegerField(default=0)
     u_likes = models.ManyToManyField(User, blank=True, related_name="u_likes")
     def __str__(self):

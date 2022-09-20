@@ -4,9 +4,11 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 function edit() {
-    const h3 = document.querySelector("h3")
-    const page = h3.id
-    fetch(`/edit/${page}`)
+    const h3 = document.querySelector("h3");
+    const page = h3.id;
+    const h4 = document.querySelector("h4");
+    const where = h4.id;
+    fetch(`/edit/${page}/${where}`)
     .then(response => response.json())
     .then((posts) =>{
         console.log(posts);
@@ -24,8 +26,15 @@ function edit() {
                 })
                 .then(response => response.json())
                 .then(post => {
-                    console.log(post.likes)
-                    document.querySelector(`#likes_${post.id}`).innerHTML= post.likes;
+                    const ele = document.querySelector(`#like_${post.id}`).innerHTML;
+                    console.log(post.likes, `#likes_${post.id}`, ele)
+                    document.querySelector(`#likes_${post.id}`).innerHTML= `${post.likes}`;
+                    if (ele === 'Like') {
+                        document.querySelector(`#like_${post.id}`).innerHTML= "Unlike"
+                    }
+                    else {
+                        document.querySelector(`#like_${post.id}`).innerHTML= "Like"
+                    }
                 })
 
                 return false;

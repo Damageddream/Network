@@ -89,9 +89,11 @@ def new_post(request):
 
 def profile(request, user_id):
     profile = User.objects.get(id=user_id)
-    posts = reversed(New_post.objects.all().filter(poster=profile.id))
+    posts = list(reversed(New_post.objects.all().filter(poster=profile.id)))
     user = User.objects.get(id=request.user.id)
-
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     if request.method == "POST":
         if "follow" in request.POST:
@@ -112,7 +114,8 @@ def profile(request, user_id):
 
     return render(request, "network/profile.html", {
         "profile": profile,
-        "posts": posts
+        "page_obj": page_obj,
+        "page_number": page_number
     })
 
 def following(request):
@@ -125,12 +128,22 @@ def following(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, "network/following.html", {
-        "page_obj": page_obj
+        "page_obj": page_obj,
+        "page_number": page_number
     })
 
 @csrf_exempt
-def edit(request,page):
-    posts = list(reversed(New_post.objects.all()))
+def edit(request,page,where):
+
+    if where == "following":
+        user = request.user
+        posts_id = []
+        for id in user.following.all():
+            posts_id.append(id.id)
+        posts = list(reversed(New_post.objects.all().filter(poster__in=posts_id)))      
+    else:
+        posts = list(reversed(New_post.objects.all()))
+
     paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page)
